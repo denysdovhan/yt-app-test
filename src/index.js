@@ -2,12 +2,12 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
-import ytApp from './reducers'
+import rootReducer from './reducers'
 import App from './components/App'
 import thunk from 'redux-thunk'
 
 const store = createStore(
-  ytApp,
+  rootReducer,
   applyMiddleware(thunk)
 )
 

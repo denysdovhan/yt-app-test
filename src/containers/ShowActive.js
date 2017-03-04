@@ -1,11 +1,9 @@
 import { connect } from 'react-redux'
 import ActiveVideo from '../components/ActiveVideo'
 
-const mapStateToProps = (state) => {
-  return {
-    url: state.videos.length ? state.videos[0].url : ''
-  }
-}
+const mapStateToProps = (state) => ({
+  url: state.length ? state[0].url : ''
+})
 
 const ShowActive = connect(
   mapStateToProps
