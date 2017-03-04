@@ -19,19 +19,23 @@ export const playVideo = (id) => {
   }
 }
 
-const getVideoId = url => url.match(/[A-Za-z0-9_-]*$/g)
-const correctUrl = url => url.replace(/\/watch\?v=/g, '/embed/').concat('?autoplay=1')
-
-export const fetchUrl = (url) => (dispatch) => {
+export const fetchUrl = (searhQuery) => (dispatch) => {
   const apiKey = 'AIzaSyAcb9Ws-PMUkHAEwUCy5PUK7M3iFeoN1SU'
-  const videoId = getVideoId(url)
-  return fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${videoId}&key=${apiKey}`)
+  return fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searhQuery}&key=${apiKey}`)
       .then(res => res.json())
-      .then(json => {
-        url = correctUrl(url)
-        const picture = json.items[0].snippet.thumbnails.high.url
-        const title = json.items[0].snippet.title
-        return dispatch(addVideo({ url, videoId, picture, title }))
-      }
-    )
+      .then(json =>
+        json.items.filter(item => item.id.kind === 'youtube#video')[0]
+      )
+      .then(({ id, snippet }) => {
+        const picture = snippet.thumbnails.high.url
+        const title = snippet.title
+        const videoId = id.videoId
+
+        return dispatch(addVideo({
+          url: `https://www.youtube.com/embed/${videoId}?autoplay=1`,
+          videoId,
+          picture,
+          title,
+        }));
+      })
 }
